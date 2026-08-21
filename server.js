@@ -15,3 +15,6 @@ if (require.main === module) {
 
 const { router: uploadRouter } = require("./src/routes/upload");
 app.use("/api", uploadRouter);
+
+const { router: scoreRouter } = require("./src/routes/score");
+app.use("/api", scoreRouter);
