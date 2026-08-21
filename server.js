@@ -12,3 +12,6 @@ if (require.main === module) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`FlakyGuard listening on port ${PORT}`));
 }
+
+const { router: authRouter } = require("./src/routes/auth");
+app.use("/api", authRouter);
