@@ -30,4 +30,13 @@ function classify(score) {
   return "highly-flaky";
 }
 
-module.exports = { computeFlakinessScore, classify };
+/**
+ * Decides whether a test should be automatically quarantined based on its
+ * flakiness score. A test is quarantined once its score meets or exceeds
+ * the given threshold (default 0.5).
+ */
+function shouldQuarantine(score, threshold = 0.5) {
+  return score >= threshold;
+}
+
+module.exports = { computeFlakinessScore, classify, shouldQuarantine };
