@@ -1,0 +1,54 @@
+name: FlakyGuard CI
+
+on:
+  push:
+    branches: [ main, "feature/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-analyze:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # ---- BUILD STAGE ----
+      - name: Install dependencies
+        run: npm ci
+
+      # ---- TEST STAGE ----
+      - name: Run unit and integration tests
+        run: npm test
+
+      # ---- ANALYSIS STAGE (coverage as a code-quality gate) ----
+      - name: Run tests with coverage and enforce thresholds
+        run: npm run test:coverage
+
+      # ---- REPORTING STAGE ----
+      - name: Upload coverage report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-node-${{ matrix.node-version }}
+          path: coverage/
+          retention-days: 14
+
+      - name: Publish test summary
+        if: always()
+        run: |
+          echo "### FlakyGuard CI Summary (Node ${{ matrix.node-version }})" >> $GITHUB_STEP_SUMMARY
+          echo "- Build: dependencies installed via npm ci" >> $GITHUB_STEP_SUMMARY
+          echo "- Test: unit + integration suite executed via npm test" >> $GITHUB_STEP_SUMMARY
+          echo "- Analysis: coverage thresholds enforced via npm run test:coverage" >> $GITHUB_STEP_SUMMARY
