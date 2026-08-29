@@ -7,7 +7,7 @@ const { router: scoreRouter } = require("./src/routes/score");
 const { router: authRouter } = require("./src/routes/auth");
 
 app.get("/", (req, res) => {
-  res.json({ status: "FlakyGuard API running" });
+  res.json({ status: "FlakyGuard API v1.0 online" });
 });
 
 app.use("/api", uploadRouter);
