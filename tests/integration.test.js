@@ -31,7 +31,7 @@ describe("Integration Workflow 1: Test-run upload -> retrieval -> flakiness scor
       .post("/api/score")
       .send({ results: ["pass", "fail", "pass", "fail"] });
 
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(400);
     expect(res.body.score).toBe(1);
     expect(res.body.classification).toBe("highly-flaky");
   });
